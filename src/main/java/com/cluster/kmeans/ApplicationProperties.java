@@ -1,12 +1,32 @@
 package com.cluster.kmeans;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
+
+import javax.annotation.PostConstruct;
+import java.util.ArrayList;
 
 @Configuration
 @ConfigurationProperties
 public class ApplicationProperties {
-    private String dataPath;
+
+    @PostConstruct
+    public void setup() {
+        if (sizeOfK <= 1) {
+            sizeOfK = 2;
+        }
+    }
+
+    @Value("${data-path:./src/main/resources/all-the-news/articles1_0.csv}")
+    public String dataPath;
+
+    @Value("${size-of-k:2}")
+    public int sizeOfK;
+
+    @Value("${variable-at:1,5}")
+    public ArrayList<String> variableAt;
+
 
     public String getDataPath() {
         return dataPath;
@@ -14,5 +34,21 @@ public class ApplicationProperties {
 
     public void setDataPath(String dataPath) {
         this.dataPath = dataPath;
+    }
+
+    public ArrayList<String> getVariableAt() {
+        return variableAt;
+    }
+
+    public void setVariableAt(ArrayList<String> variableAt) {
+        this.variableAt = variableAt;
+    }
+
+    public int getSizeOfK() {
+        return sizeOfK;
+    }
+
+    public void setSizeOfK(int sizeOfK) {
+        this.sizeOfK = sizeOfK;
     }
 }

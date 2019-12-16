@@ -1,5 +1,7 @@
 package com.cluster.kmeans;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -7,6 +9,8 @@ import java.util.*;
 
 @Service
 public class KmeansServiceImpl implements KmeansService {
+    Logger logger = LoggerFactory.getLogger(this.getClass().getName());
+
     @Autowired
     ApplicationProperties applicationProperties;
     @Autowired
@@ -16,19 +20,21 @@ public class KmeansServiceImpl implements KmeansService {
     DataSource dataSource;
 
     public List<List<Long>> getClusteredData() {
+      //  System.out.println("##############Application properties:" + applicationProperties.variableAt[0] + "################");
+
         Random random = new Random();
-        int var = 2;
-        int k = 2;
+        int numberOfVariables = applicationProperties.variableAt == null ? 2 : applicationProperties.variableAt.size();
+       // int k = 2;
 
         List<List<Long>> clusters = new ArrayList();
         Set<Long> randomIndexSet = new HashSet<Long>();
         List<Double[]> centroids = new ArrayList<Double[]>();
 
-        while(randomIndexSet.size() < k) {
+        while(randomIndexSet.size() < applicationProperties.sizeOfK) {
             long randIndex = (long) (random.nextInt(dataSource.recordsIds.size()));
             if(randomIndexSet.add(randIndex)) {
                 Long recordId = dataSource.recordsIds.get((int) randIndex);
-                Double centroidsVal [] = new Double[var];
+                Double centroidsVal [] = new Double[numberOfVariables];
                 Model record = dataSource.datasetHashMap.get(recordId+"");
                 centroidsVal[0] = (double) record.id;
                 centroidsVal[1] = (double) record.date;
@@ -47,7 +53,7 @@ public class KmeansServiceImpl implements KmeansService {
             Map<Long, Double[]> distanceMat = new HashMap<Long, Double[]>();
             for (Map.Entry<String, Model> entry : dataSource.datasetHashMap.entrySet()) {
                 Model record = entry.getValue();
-                Double[] distances = new Double[k];
+                Double[] distances = new Double[applicationProperties.sizeOfK];
                 int i = 0;
                 for (Double[] centroid : centroids) {
                     double distance = Math.sqrt(Math.pow(centroid[0] - record.id, 2)) +

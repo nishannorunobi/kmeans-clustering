@@ -21,7 +21,7 @@ public class DataSource {
     List<Long> recordsIds = new ArrayList<>();
 
     public boolean loadData() {
-        try (BufferedReader br = new BufferedReader(new FileReader("./src/main/resources/all-the-news/articles1_0.csv"))) {
+        try (BufferedReader br = new BufferedReader(new FileReader(applicationProperties.dataPath))) {
             String line;
             while ((line = br.readLine()) != null) {
                 //String[] values = line.split(",");

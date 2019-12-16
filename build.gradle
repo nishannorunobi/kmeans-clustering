@@ -14,9 +14,9 @@ repositories {
 
 dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter'
-	testImplementation('org.springframework.boot:spring-boot-starter-test') {
-		exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
-	}
+	implementation 'org.slf4j:slf4j-api:1.7.26'
+	compileOnly 'org.projectlombok:lombok:1.18.8'
+	testCompileOnly 'org.projectlombok:lombok:1.18.8'
 }
 
 test {
