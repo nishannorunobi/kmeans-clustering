@@ -24,9 +24,30 @@ public class ApplicationProperties {
     @Value("${size-of-k:2}")
     public int sizeOfK;
 
-    @Value("${variable-at:1,5}")
+    @Value("${no-of-iteration:-1}")
+    long noOfIteration;
+
+    @Value("${how-many-records:-1}")
+    public int howManyRecordsToRead;
+
+    @Value("${variable-at:6}")
     public ArrayList<String> variableAt;
 
+    public long getNoOfIteration() {
+        return noOfIteration;
+    }
+
+    public void setNoOfIteration(long noOfIteration) {
+        this.noOfIteration = noOfIteration;
+    }
+
+    public int getHowManyRecordsToRead() {
+        return howManyRecordsToRead;
+    }
+
+    public void setHowManyRecordsToRead(int howManyRecordsToRead) {
+        this.howManyRecordsToRead = howManyRecordsToRead;
+    }
 
     public String getDataPath() {
         return dataPath;

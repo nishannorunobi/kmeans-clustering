@@ -17,20 +17,39 @@ public class DataSource {
     @Autowired
     ApplicationUtil applicationUtil;
 
-    Map<String, Model> datasetHashMap = new HashMap<String, Model>();
+    Map<String, Model> modelBasedDataMap = new HashMap<String, Model>();
+    Map<String, Double[]> distanceMatrix = new HashMap<String, Double[]>();
+    Map<String, Double[]> earlyDistanceMatrix = new HashMap<String, Double[]>();
+    Map<String, String[]> indexBasedDataMap = new HashMap<String, String[]>();
     List<Long> recordsIds = new ArrayList<>();
 
     public boolean loadData() {
         try (BufferedReader br = new BufferedReader(new FileReader(applicationProperties.dataPath))) {
             String line;
+            long recordsLoaded = 0;
             while ((line = br.readLine()) != null) {
-                //String[] values = line.split(",");
                 String[] values = line.split(",(?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)", -1);
-
                 Model dataModel = applicationUtil.convertToModel(values);
                 if (dataModel != null) {
                     recordsIds.add(dataModel.id);
-                    datasetHashMap.put(dataModel.id + "", dataModel);
+                    modelBasedDataMap.put(dataModel.id + "", dataModel);
+                    indexBasedDataMap.put(dataModel.id+"", new String[]{
+                            dataModel.indexNo+"",
+                            dataModel.id+"",
+                            dataModel.title,
+                            dataModel.publication,
+                            dataModel.author,
+                            dataModel.date+"",
+                            dataModel.year,
+                            dataModel.month,
+                            dataModel.content,
+                            dataModel.url
+                    });
+                }
+                recordsLoaded++;
+                if (applicationProperties.howManyRecordsToRead > 0 &&
+                recordsLoaded >= applicationProperties.howManyRecordsToRead){
+                    break;
                 }
             }
         } catch (FileNotFoundException e) {

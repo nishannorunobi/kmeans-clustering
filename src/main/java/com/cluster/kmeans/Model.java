@@ -1,7 +1,8 @@
 package com.cluster.kmeans;
 
 public class Model {
-	public long id;         
+	public long indexNo;
+	public long id;
 	public String title;      
 	public String publication;
 	public String author;     

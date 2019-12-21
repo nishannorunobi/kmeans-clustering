@@ -19,53 +19,27 @@ public class KmeansServiceImpl implements KmeansService {
     @Autowired
     DataSource dataSource;
 
-    public List<List<Long>> getClusteredData() {
-      //  System.out.println("##############Application properties:" + applicationProperties.variableAt[0] + "################");
+    public void makeCluster() {
 
-        Random random = new Random();
-        int numberOfVariables = applicationProperties.variableAt == null ? 2 : applicationProperties.variableAt.size();
-       // int k = 2;
+        List[] clusters = new ArrayList[applicationProperties.sizeOfK];
+        List<Double[]> centroids = new ArrayList<>();
 
-        List<List<Long>> clusters = new ArrayList();
-        Set<Long> randomIndexSet = new HashSet<Long>();
-        List<Double[]> centroids = new ArrayList<Double[]>();
+        long iterationNo = 0;
+        while (true) {
+            System.out.println("##############Iteration No:" + ++iterationNo + "################");
 
-        while(randomIndexSet.size() < applicationProperties.sizeOfK) {
-            long randIndex = (long) (random.nextInt(dataSource.recordsIds.size()));
-            if(randomIndexSet.add(randIndex)) {
-                Long recordId = dataSource.recordsIds.get((int) randIndex);
-                Double centroidsVal [] = new Double[numberOfVariables];
-                Model record = dataSource.datasetHashMap.get(recordId+"");
-                centroidsVal[0] = (double) record.id;
-                centroidsVal[1] = (double) record.date;
-                centroids.add(centroidsVal);
-                // initialize cluster
-                List<Long> clusterNo = new ArrayList<Long>();
-                clusters.add(clusterNo);
+            if (iterationNo == 1) {
+                centroids = helper.chooseRandomCentroidsRows();
+            } else {
+                helper.updateCentroids(centroids, clusters);
+                clusters = new ArrayList[applicationProperties.sizeOfK];
             }
-        }
+            helper.printCentroid(centroids);
 
-        System.out.println(dataSource.recordsIds.size());
-
-        int iterationNo = 1;
-        while(true) {
-            System.out.println("##############Iteration No:" + iterationNo + "################");
-            Map<Long, Double[]> distanceMat = new HashMap<Long, Double[]>();
-            for (Map.Entry<String, Model> entry : dataSource.datasetHashMap.entrySet()) {
-                Model record = entry.getValue();
-                Double[] distances = new Double[applicationProperties.sizeOfK];
-                int i = 0;
-                for (Double[] centroid : centroids) {
-                    double distance = Math.sqrt(Math.pow(centroid[0] - record.id, 2)) +
-                            Math.sqrt(Math.pow(centroid[1] - record.date, 2));
-                    distances[i++] = distance;
-                }
-                distanceMat.put(record.id, distances);
-            }
-
-            //printDistanceMatrix(distanceMat);
-
-            for (Map.Entry<Long, Double[]> entry : distanceMat.entrySet()) {
+            dataSource.earlyDistanceMatrix.clear();
+            Map<String, Double[]> distanceMat = helper.calculateDistances(centroids);
+            helper.printDistanceMatrix(distanceMat);
+            for (Map.Entry<String, Double[]> entry : distanceMat.entrySet()) {
                 Double[] distances = entry.getValue();
                 double min = Integer.MAX_VALUE;
                 int c = 0;
@@ -75,16 +49,19 @@ public class KmeansServiceImpl implements KmeansService {
                         min = distances[i];
                     }
                 }
-                clusters.get(c).add(entry.getKey());
+                if (clusters[c] == null) {
+                    clusters[c] = new ArrayList<String>();
+                }
+                ArrayList<String> clusterNo = (ArrayList<String>) clusters[c];
+                clusterNo.add(entry.getKey());
             }
-
             helper.printCluster(clusters);
-            helper.updateCentroids(centroids, clusters);
 
-            iterationNo++;
-            if (iterationNo == 5) break;
-            helper.clearOldClusters(clusters);
+            if (applicationProperties.noOfIteration > 0 &&
+                    iterationNo >= applicationProperties.noOfIteration) {
+                break;
+            }
+            System.out.println("##############Iteration No:" + iterationNo + " done ################");
         }
-        return clusters;
     }
 }
