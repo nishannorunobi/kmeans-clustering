@@ -21,8 +21,8 @@ public class KmeansServiceImpl implements KmeansService {
 
     public void makeCluster() {
 
-        List[] clusters = new ArrayList[applicationProperties.sizeOfK];
-        List<Double[]> centroids = new ArrayList<>();
+        List[] clusters = initializeClusterList();
+        List<double[]> centroids = new ArrayList<>();
 
         long iterationNo = 0;
         while (true) {
@@ -32,7 +32,7 @@ public class KmeansServiceImpl implements KmeansService {
                 centroids = helper.chooseRandomCentroidsRows();
             } else {
                 helper.updateCentroids(centroids, clusters);
-                clusters = new ArrayList[applicationProperties.sizeOfK];
+                clusters = initializeClusterList();
             }
             helper.printCentroid(centroids);
 
@@ -49,9 +49,6 @@ public class KmeansServiceImpl implements KmeansService {
                         min = distances[i];
                     }
                 }
-                if (clusters[c] == null) {
-                    clusters[c] = new ArrayList<String>();
-                }
                 ArrayList<String> clusterNo = (ArrayList<String>) clusters[c];
                 clusterNo.add(entry.getKey());
             }
@@ -63,5 +60,13 @@ public class KmeansServiceImpl implements KmeansService {
             }
             System.out.println("##############Iteration No:" + iterationNo + " done ################");
         }
+    }
+
+    private List[] initializeClusterList() {
+        List[] clusters = new ArrayList[applicationProperties.sizeOfK];
+        for (int i = 0; i < applicationProperties.sizeOfK; i++) {
+            clusters[i] = new ArrayList<>();
+        }
+        return clusters;
     }
 }

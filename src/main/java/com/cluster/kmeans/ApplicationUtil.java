@@ -40,9 +40,16 @@ public class ApplicationUtil {
                 case "1":
                     //already set id value;
                     break;
+                case "3":
+                    model.publication = computeWordWeight(values[3]);
+                    break;
+                case "4":
+                    model.author = computeWordWeight(values[4]);
+                    break;
                 case "5":
                     String date = values[5];
-                    date = date.replaceAll("-", "");
+                    date = date.replaceAll("-", "")
+                            .replaceAll("\\s", "");
 
                     try {
                         model.date = Long.valueOf(date);
@@ -53,11 +60,13 @@ public class ApplicationUtil {
                     break;
                 case "6":
                     String year = values[6];
-                    model.year = year;
+                    model.year = Long.valueOf(year);
+                    ;
                     break;
                 case "7":
                     String month = values[7];
-                    model.month = month;
+                    model.month = Long.valueOf(month);
+                    ;
                     break;
                 default:
                     break;
@@ -84,32 +93,33 @@ public class ApplicationUtil {
 
     }
 
-    public void updateCentroids(List<Double[]> centroids, List<String>[] clusters) {
+    public void updateCentroids(List<double[]> centroids, List<String>[] clusters) {
         for (int cls = 0; cls < clusters.length; cls++) {
             ArrayList<String> clusterArray = (ArrayList<String>) clusters[cls];
-            Double[] sum = new Double[properties.variableAt.size()];
+
+            double[] sum = new double[properties.variableAt.size()];
             for (String recordId : clusterArray) {
-                String record[] = dataSource.indexBasedDataMap.get(recordId + "");
+                Long record[] = dataSource.indexBasedDataMap.get(recordId + "");
                 for (int i = 0; i < properties.variableAt.size(); i++) {
                     int indexString = Integer.valueOf(properties.variableAt.get(i));
-                    if (sum[i] == null) {
-                        sum[i] = 0D;
-                    }
                     sum[i] += Double.valueOf(record[indexString]);
                 }
             }
-
-            Double[] mean = new Double[properties.variableAt.size()];
-            for (int i = 0; i < properties.variableAt.size(); i++) {
-                mean[i] = sum[i] / clusterArray.size();
+            if (clusterArray.size() > 1) {
+                double[] mean = new double[properties.variableAt.size()];
+                for (int i = 0; i < properties.variableAt.size(); i++) {
+                    mean[i] = sum[i] / clusterArray.size();
+                }
+                centroids.set(cls, mean);
+            } else {
+                centroids.set(cls, sum);
             }
-            centroids.set(cls, mean);
         }
     }
 
-    public List<Double[]> chooseRandomCentroidsRows() {
-        List<Double[]> centroids = new ArrayList<Double[]>();
+    public List<double[]> chooseRandomCentroidsRows() {
 
+        List<double[]> centroids = new ArrayList<double[]>();
         Random random = new Random();
         int numberOfVariables = properties.variableAt == null ? 1 : properties.variableAt.size();
         Set<Long> randomIndexSet = new HashSet<Long>();
@@ -119,8 +129,8 @@ public class ApplicationUtil {
             long randIndex = (long) (random.nextInt(dataSource.recordsIds.size()));
             if (randomIndexSet.add(randIndex)) {
                 Long recordId = dataSource.recordsIds.get((int) randIndex);
-                Double centroidsVal[] = new Double[numberOfVariables];
-                String record[] = dataSource.indexBasedDataMap.get(recordId + "");
+                double centroidsVal[] = new double[numberOfVariables];
+                Long record[] = dataSource.indexBasedDataMap.get(recordId + "");
                 for (int i = 0; i < properties.variableAt.size(); i++) {
                     int indexString = Integer.valueOf(properties.variableAt.get(i));
                     centroidsVal[i] = Double.valueOf(record[indexString]);
@@ -131,18 +141,18 @@ public class ApplicationUtil {
         return centroids;
     }
 
-    public Map<String, Double[]> calculateDistances(List<Double[]> centroids) {
+    public Map<String, Double[]> calculateDistances(List<double[]> centroids) {
         for (Map.Entry<String, Model> entry : dataSource.modelBasedDataMap.entrySet()) {
             Model model = entry.getValue();
-            String[] record = dataSource.indexBasedDataMap.get(model.id + "");
+            Long[] record = dataSource.indexBasedDataMap.get(model.id + "");
             Double[] distances = new Double[properties.sizeOfK];
             int k = 0;
-            for (Double[] centroid : centroids) {
+            for (double[] centroid : centroids) {
                 double distance = 0;
                 for (int ii = 0; ii < properties.variableAt.size(); ii++) {
                     int index = Integer.valueOf(properties.variableAt.get(ii));
-                    long variable = Long.valueOf(record[index]);
-                    double centroidVal = Double.valueOf(centroid[ii]);
+                    long variable = record[index];
+                    double centroidVal = centroid[ii];
                     distance += Math.pow(variable - centroidVal, 2);
                 }
 
@@ -187,17 +197,41 @@ public class ApplicationUtil {
         }
     }
 
-    public void printCentroid(List<Double[]> centroids) {
+    public void printCentroid(List<double[]> centroids) {
         System.out.println("################printing centroid#############");
         int i = 1;
-        for (Double[] centroid : centroids){
-            String str = "c"+i+" >> ";
-            for (double centroidxyz : centroid){
-                str += centroidxyz+",";
+        for (double[] centroid : centroids) {
+            String str = "c" + i + " >> ";
+            for (double centroidxyz : centroid) {
+                str += centroidxyz + ",";
             }
             i++;
             System.out.println(str);
         }
         System.out.println("################printing centroid done #############");
+    }
+
+    public long computeWordWeight(String word) {
+        // return computeAsciiWeight(word);
+        return computeWeightHash(word);
+    }
+
+    private long computeWeightHash(String word) {
+        return word.replaceAll("\\s", "")
+                .toUpperCase()
+                .hashCode();
+    }
+
+    public long computeAsciiWeight(String word) {
+        long weight = 0;
+
+        char[] chars = word.replaceAll("\\s", "")
+                .toUpperCase()
+                .toCharArray();
+
+        for (int i = 0; i < chars.length; i++) {
+            weight += ((int) chars[i] * (chars.length - i));
+        }
+        return weight;
     }
 }

@@ -4,11 +4,11 @@ public class Model {
 	public long indexNo;
 	public long id;
 	public String title;      
-	public String publication;
-	public String author;     
+	public long publication;
+	public long author;
 	public long date;   
-	public String year;   
-	public String month; 
+	public long year;
+	public long month;
 	public String url;     
 	public String content;    
 

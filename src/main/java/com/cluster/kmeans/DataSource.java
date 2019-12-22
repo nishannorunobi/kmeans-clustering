@@ -20,7 +20,7 @@ public class DataSource {
     Map<String, Model> modelBasedDataMap = new HashMap<String, Model>();
     Map<String, Double[]> distanceMatrix = new HashMap<String, Double[]>();
     Map<String, Double[]> earlyDistanceMatrix = new HashMap<String, Double[]>();
-    Map<String, String[]> indexBasedDataMap = new HashMap<String, String[]>();
+    Map<String, Long[]> indexBasedDataMap = new HashMap<String, Long[]>();
     List<Long> recordsIds = new ArrayList<>();
 
     public boolean loadData() {
@@ -33,17 +33,17 @@ public class DataSource {
                 if (dataModel != null) {
                     recordsIds.add(dataModel.id);
                     modelBasedDataMap.put(dataModel.id + "", dataModel);
-                    indexBasedDataMap.put(dataModel.id+"", new String[]{
-                            dataModel.indexNo+"",
-                            dataModel.id+"",
-                            dataModel.title,
+                    indexBasedDataMap.put(dataModel.id+"", new Long[]{
+                            dataModel.indexNo,
+                            dataModel.id,
+                            0L,
                             dataModel.publication,
                             dataModel.author,
-                            dataModel.date+"",
+                            dataModel.date,
                             dataModel.year,
                             dataModel.month,
-                            dataModel.content,
-                            dataModel.url
+                            0L,
+                            0L
                     });
                 }
                 recordsLoaded++;
