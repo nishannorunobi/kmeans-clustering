@@ -17,6 +17,9 @@ public class DataSource {
     @Autowired
     ApplicationUtil applicationUtil;
 
+    @Autowired
+    ModelBuilder modelBuilder;
+
     public static Map<String, Model> modelBasedDataMap = new HashMap<String, Model>();
     public static Map<String, Double[]> distanceMatrix = new HashMap<String, Double[]>();
     public static Map<String, Double[]> earlyDistanceMatrix = new HashMap<String, Double[]>();
@@ -29,7 +32,7 @@ public class DataSource {
             long recordsLoaded = 0;
             while ((line = br.readLine()) != null) {
                 String[] values = line.split(",(?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)", -1);
-                Model dataModel = applicationUtil.convertToModel(values);
+                Model dataModel = modelBuilder.convertToModel(values);
                 if (dataModel != null) {
                     recordsIds.add(dataModel.id);
                     modelBasedDataMap.put(dataModel.id + "", dataModel);
@@ -62,10 +65,4 @@ public class DataSource {
         System.out.println("Records size : "+recordsIds.size());
         return true;
     }
-
-
-    public void printDataRecords() {
-        System.out.println(DataSource.modelBasedDataMap);
-    }
-
 }

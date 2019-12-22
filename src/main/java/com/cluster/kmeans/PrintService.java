@@ -7,6 +7,12 @@ import java.util.Map;
 
 @Component
 public class PrintService {
+
+
+    public void printDataRecords() {
+        System.out.println(DataSource.modelBasedDataMap);
+    }
+
     public void printCluster(List[] clusters) {
         for (int i = 0; i < clusters.length; i++) {
             System.out.println("Cluster " + i);

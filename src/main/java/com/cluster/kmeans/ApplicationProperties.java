@@ -30,8 +30,30 @@ public class ApplicationProperties {
     @Value("${how-many-records:-1}")
     public int howManyRecordsToRead;
 
+    @Value("${identifier-row:0}")
+    public int identifierRow;
+
     @Value("${variable-at:6}")
     public ArrayList<String> variableAt;
+
+    @Value("${skip-row-no:6}")
+    public ArrayList<String> skipRowList;
+
+    public int getIdentifierRow() {
+        return identifierRow;
+    }
+
+    public void setIdentifierRow(int identifierRow) {
+        this.identifierRow = identifierRow;
+    }
+
+    public ArrayList<String> getSkipRowList() {
+        return skipRowList;
+    }
+
+    public void setSkipRowList(ArrayList<String> skipRowList) {
+        this.skipRowList = skipRowList;
+    }
 
     public long getNoOfIteration() {
         return noOfIteration;

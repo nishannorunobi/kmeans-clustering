@@ -13,69 +13,6 @@ public class ApplicationUtil {
     @Autowired
     ApplicationProperties properties;
 
-    public Model convertToModel(String[] values) {
-        Model model = new Model();
-
-        for (int i = 0; i < properties.variableAt.size(); i++) {
-            String indexString = properties.variableAt.get(i);
-
-            try {
-                model.id = Long.valueOf(values[1]);
-            } catch (Exception e) {
-                System.err.println("Id parsing failed");
-                System.err.println(e.getMessage());
-                return null;
-            }
-
-            switch (indexString) {
-                case "0":
-                    try {
-                        model.indexNo = Long.valueOf(values[0]);
-                    } catch (Exception e) {
-                        System.err.println("Index parsing failed");
-                        System.err.println(e.getMessage());
-                        return null;
-                    }
-                    break;
-                case "1":
-                    //already set id value;
-                    break;
-                case "3":
-                    model.publication = computeWordWeight(values[3]);
-                    break;
-                case "4":
-                    model.author = computeWordWeight(values[4]);
-                    break;
-                case "5":
-                    String date = values[5];
-                    date = date.replaceAll("-", "")
-                            .replaceAll("\\s", "");
-
-                    try {
-                        model.date = Long.valueOf(date);
-                    } catch (Exception e) {
-                        // wrongDataCount ++;
-                        return null;
-                    }
-                    break;
-                case "6":
-                    String year = values[6];
-                    model.year = Long.valueOf(year);
-                    ;
-                    break;
-                case "7":
-                    String month = values[7];
-                    model.month = Long.valueOf(month);
-                    ;
-                    break;
-                default:
-                    break;
-            }
-        }
-
-        return model;
-    }
-
     public void clearOldClusters(List<List<String>> clusters) {
         for (int i = 0; i < clusters.size(); i++) {
             List<String> cluster = clusters.get(i);
@@ -157,32 +94,10 @@ public class ApplicationUtil {
         return dataSource.distanceMatrix;
     }
 
-    public boolean equalLists(List<String> one, List<String> two) {
-        if (one == null && two == null) {
-            return true;
-        }
-
-        if ((one == null && two != null)
-                || one != null && two == null
-                || one.size() != two.size()) {
-            return false;
-        }
-
-        //to avoid messing the order of the lists we will use a copy
-        //as noted in comments by A. R. S.
-        one = new ArrayList<String>(one);
-        two = new ArrayList<String>(two);
-
-        Collections.sort(one);
-        Collections.sort(two);
-        return one.equals(two);
-    }
-
-
 
     public long computeWordWeight(String word) {
-        // return computeAsciiWeight(word);
-        return computeWeightHash(word);
+         return computeAsciiWeight(word);
+        //return computeWeightHash(word);
     }
 
     private long computeWeightHash(String word) {

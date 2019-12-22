@@ -13,6 +13,7 @@ public class KmeansServiceImpl implements KmeansService {
 
     @Autowired
     ApplicationProperties applicationProperties;
+
     @Autowired
     ApplicationUtil helper;
 
