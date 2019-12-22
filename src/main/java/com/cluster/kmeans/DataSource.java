@@ -17,11 +17,11 @@ public class DataSource {
     @Autowired
     ApplicationUtil applicationUtil;
 
-    Map<String, Model> modelBasedDataMap = new HashMap<String, Model>();
-    Map<String, Double[]> distanceMatrix = new HashMap<String, Double[]>();
-    Map<String, Double[]> earlyDistanceMatrix = new HashMap<String, Double[]>();
-    Map<String, Long[]> indexBasedDataMap = new HashMap<String, Long[]>();
-    List<Long> recordsIds = new ArrayList<>();
+    public static Map<String, Model> modelBasedDataMap = new HashMap<String, Model>();
+    public static Map<String, Double[]> distanceMatrix = new HashMap<String, Double[]>();
+    public static Map<String, Double[]> earlyDistanceMatrix = new HashMap<String, Double[]>();
+    public static Map<String, Long[]> indexBasedDataMap = new HashMap<String, Long[]>();
+    public static List<Long> recordsIds = new ArrayList<>();
 
     public boolean loadData() {
         try (BufferedReader br = new BufferedReader(new FileReader(applicationProperties.dataPath))) {
@@ -62,4 +62,10 @@ public class DataSource {
         System.out.println("Records size : "+recordsIds.size());
         return true;
     }
+
+
+    public void printDataRecords() {
+        System.out.println(DataSource.modelBasedDataMap);
+    }
+
 }

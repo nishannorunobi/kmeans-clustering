@@ -18,11 +18,14 @@ public class Model {
 
 	@Override
 	public String toString() {
-		return "Model [id=" + id + ", publication=" + publication + ", author=" + author + ", date=" + date + "]";
+		return "Model{" +
+				"indexNo=" + indexNo +
+				", id=" + id +
+				", publication=" + publication +
+				", author=" + author +
+				", date=" + date +
+				", year=" + year +
+				", month=" + month +
+				'}';
 	}
-
-
-
-	
-
 }

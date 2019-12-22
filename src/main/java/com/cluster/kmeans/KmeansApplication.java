@@ -27,6 +27,7 @@ public class KmeansApplication {
     @PostConstruct
     public void startup() {
         if (dataSource.loadData()) {
+            //dataSource.printDataRecords();
             kmeansService.makeCluster();
         } else {
             System.err.println("Data load unsuccessful");

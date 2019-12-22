@@ -17,6 +17,9 @@ public class KmeansServiceImpl implements KmeansService {
     ApplicationUtil helper;
 
     @Autowired
+    PrintService printService;
+
+    @Autowired
     DataSource dataSource;
 
     public void makeCluster() {
@@ -38,7 +41,7 @@ public class KmeansServiceImpl implements KmeansService {
 
             dataSource.earlyDistanceMatrix.clear();
             Map<String, Double[]> distanceMat = helper.calculateDistances(centroids);
-            helper.printDistanceMatrix(distanceMat);
+            //helper.printDistanceMatrix(distanceMat);
             for (Map.Entry<String, Double[]> entry : distanceMat.entrySet()) {
                 Double[] distances = entry.getValue();
                 double min = Integer.MAX_VALUE;
@@ -52,7 +55,8 @@ public class KmeansServiceImpl implements KmeansService {
                 ArrayList<String> clusterNo = (ArrayList<String>) clusters[c];
                 clusterNo.add(entry.getKey());
             }
-            helper.printCluster(clusters);
+            //|printService.printCluster(clusters);
+            printService.printClusterSize(clusters);
 
             if (applicationProperties.noOfIteration > 0 &&
                     iterationNo >= applicationProperties.noOfIteration) {

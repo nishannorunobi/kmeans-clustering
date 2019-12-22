@@ -84,14 +84,7 @@ public class ApplicationUtil {
 
     }
 
-    public void printCluster(List[] clusters) {
-        for (int i = 0; i < clusters.length; i++) {
-            System.out.println("Cluster " + i);
-            List<String> cluster = clusters[i];
-            System.out.println(cluster);
-        }
 
-    }
 
     public void updateCentroids(List<double[]> centroids, List<String>[] clusters) {
         for (int cls = 0; cls < clusters.length; cls++) {
