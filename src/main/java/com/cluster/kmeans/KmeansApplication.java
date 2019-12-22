@@ -29,6 +29,7 @@ public class KmeansApplication {
 
     @PostConstruct
     public void startup() {
+        //dataSource.readFilesContent();
         if (dataSource.loadData()) {
             //printService.printDataRecords();
             kmeansService.makeCluster();
