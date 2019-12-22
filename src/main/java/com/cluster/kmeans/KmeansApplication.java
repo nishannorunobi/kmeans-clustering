@@ -20,6 +20,9 @@ public class KmeansApplication {
     @Autowired
     DataSource dataSource;
 
+    @Autowired
+    PrintService printService;
+
     public static void main(String[] args) {
         SpringApplication.run(KmeansApplication.class, args);
     }
@@ -27,7 +30,7 @@ public class KmeansApplication {
     @PostConstruct
     public void startup() {
         if (dataSource.loadData()) {
-            //dataSource.printDataRecords();
+            //printService.printDataRecords();
             kmeansService.makeCluster();
         } else {
             System.err.println("Data load unsuccessful");

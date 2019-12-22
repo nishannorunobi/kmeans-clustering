@@ -37,7 +37,7 @@ public class KmeansServiceImpl implements KmeansService {
                 helper.updateCentroids(centroids, clusters);
                 clusters = initializeClusterList();
             }
-            helper.printCentroid(centroids);
+            printService.printCentroid(centroids);
 
             dataSource.earlyDistanceMatrix.clear();
             Map<String, Double[]> distanceMat = helper.calculateDistances(centroids);
