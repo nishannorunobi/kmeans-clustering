@@ -61,6 +61,7 @@ public class KmeansServiceImpl implements KmeansService {
             printService.printClusterSize(clusters);
 
             if (abortIteration(iterationNo, earlyClusters, clusters)) {
+                helper.storeReport(centroids,clusters);
                 break;
             }
 
@@ -90,7 +91,7 @@ public class KmeansServiceImpl implements KmeansService {
     private List[] initializeClusterList() {
         List[] clusters = new ArrayList[applicationProperties.sizeOfK];
         for (int i = 0; i < applicationProperties.sizeOfK; i++) {
-            clusters[i] = new ArrayList<>();
+            clusters[i] = new ArrayList<String>();
         }
         return clusters;
     }

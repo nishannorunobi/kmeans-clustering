@@ -3,7 +3,15 @@ package com.cluster.kmeans;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardOpenOption;
 import java.util.*;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Component
 public class ApplicationUtil {
@@ -127,5 +135,60 @@ public class ApplicationUtil {
             }
         }
         return matched;
+    }
+
+    public void storeReport(List<double[]> centroids, List[] clusters) {
+        writeInDifferentFile(clusters);
+        //writeIntoSameFile(clusters);
+    }
+
+    private void writeInDifferentFile(List[] clusters) {
+        int i = 1;
+        for (List list : clusters) {
+            String fileName = "cluster"+i+".csv";
+            try {
+                Path file = Paths.get(properties.outputDataPath+fileName);
+                Files.write(file, list, StandardCharsets.UTF_8);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            i++;
+        }
+    }
+
+    private void writeIntoSameFile(List[] clusters) {
+        ArrayList<String> maxSizedCluster = new ArrayList();
+        for (List list : clusters) {
+            if (list.size() > maxSizedCluster.size()) {
+                //ArrayList clusterArr = (ArrayList) list;
+                maxSizedCluster.clear();
+                maxSizedCluster.addAll(list);
+            }
+        }
+
+        for (int i = 0; i < maxSizedCluster.size(); i++) {
+            StringBuilder csvRow = new StringBuilder("");
+            for (List cluster : clusters) {
+                if (cluster.size() > i) {
+                    csvRow.append(cluster.get(i)).append(",");
+                }
+            }
+            String csvRowStr = csvRow.substring(0, csvRow.length() - 2);
+
+            String fileName = "cluster.csv";
+            try {
+                Path file = Paths.get(properties.outputDataPath+fileName);
+                Files.write(file,
+                        csvRowStr.getBytes(),
+                        StandardOpenOption.APPEND);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    public String convertToCSV(String[] data) {
+        return Stream.of(data)
+                .collect(Collectors.joining(","));
     }
 }

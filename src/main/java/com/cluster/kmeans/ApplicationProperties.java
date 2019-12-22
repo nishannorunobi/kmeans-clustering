@@ -21,6 +21,9 @@ public class ApplicationProperties {
     @Value("${data-path:./src/main/resources/all-the-news/articles1_0.csv}")
     public String dataPath;
 
+    @Value("${output-data-path:./src/main/resources/all-the-news/output/}")
+    public String outputDataPath;
+
     @Value("${size-of-k:2}")
     public int sizeOfK;
 
