@@ -22,7 +22,6 @@ public class ApplicationUtil {
     }
 
 
-
     public void updateCentroids(List<double[]> centroids, List<String>[] clusters) {
         for (int cls = 0; cls < clusters.length; cls++) {
             ArrayList<String> clusterArray = (ArrayList<String>) clusters[cls];
@@ -96,7 +95,7 @@ public class ApplicationUtil {
 
 
     public long computeWordWeight(String word) {
-         return computeAsciiWeight(word);
+        return computeAsciiWeight(word);
         //return computeWeightHash(word);
     }
 
@@ -117,5 +116,16 @@ public class ApplicationUtil {
             weight += ((int) chars[i] * (chars.length - i));
         }
         return weight;
+    }
+
+    public boolean clusterEqualityCheck(List[] earlyClusters, List[] ongoingClusters) {
+        boolean matched = false;
+        for (int i = 0; i < earlyClusters.length; i++) {
+            matched = earlyClusters[i].equals(ongoingClusters[i]);
+            if (!matched) {
+                break;
+            }
+        }
+        return matched;
     }
 }

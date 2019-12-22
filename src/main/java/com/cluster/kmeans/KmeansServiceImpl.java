@@ -78,18 +78,12 @@ public class KmeansServiceImpl implements KmeansService {
                 iterationNo >= applicationProperties.noOfIteration) {
             return true;
         }
-        boolean matched = false;
-        for (int i = 0; i < earlyClusters.length; i++) {
-            matched = earlyClusters[i].equals(ongoingClusters[i]);
-            if (!matched) {
-                break;
-            }
-        }
 
-        if (matched) {
+        boolean clusterEquals = helper.clusterEqualityCheck(earlyClusters, ongoingClusters);
+
+        if (clusterEquals) {
             return true;
         }
-
         return false;
     }
 
